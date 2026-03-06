@@ -1,23 +1,32 @@
 import { useState, useEffect } from "react";
 import { api } from "../services/api";
+import FiltroPessoas from "../components/FiltroPessoas";
 
 export const Pessoas = () => {
   const [pessoas, setPessoas] = useState([]);
 
-  useEffect(() => {
-    async function carregar() {
-      try {
-        const response = await api.get("/pessoas");
-        const apenasMentores = response.data.filter(
-          (p) => p.buscando === "professor",
-        );
-        setPessoas(apenasMentores);
-      } catch (error) {
-        console.error(error);
-      }
+  const carregarTodos = async () => {
+    try {
+      const response = await api.get("/pessoas");
+      const apenasMentores = response.data.filter(
+        (p) => p.buscando === "professor",
+      );
+      setPessoas(apenasMentores);
+    } catch (error) {
+      console.error(error);
     }
-    carregar();
+  };
+
+  useEffect(() => {
+    carregarTodos();
   }, []);
+
+  const atualizarLista = (resultadosDaBusca) => {
+    const apenasMentores = resultadosDaBusca.filter(
+      (p) => p.buscando === "professor",
+    );
+    setPessoas(apenasMentores);
+  };
 
   return (
     <>
@@ -28,8 +37,7 @@ export const Pessoas = () => {
               Profissionais
             </h1>
             <p className="text-[16px] md:text-[24px] text-[#2092D3] font-light leading-relaxed">
-              Nossa rede de talentos. Descubra mentores prontos para ensinar
-              você.
+              Nossa rede de talentos. Descubra mentores prontos para ensinar você.
             </p>
             <div className="w-16 h-1.5 bg-[#FFD84F] mt-8 rounded-full mx-auto lg:mx-0"></div>
           </div>
@@ -46,10 +54,12 @@ export const Pessoas = () => {
               </span>
             </div>
 
+            <FiltroPessoas onBuscar={atualizarLista} onLimpar={carregarTodos} />
+
             {pessoas.length === 0 ? (
               <div className="text-center py-20 bg-white rounded-2xl border border-[#E5E7EB] shadow-sm">
                 <p className="text-[#524f4f] text-[18px] font-light">
-                  Nenhum mentor encontrado na rede.
+                  Nenhum mentor encontrado com esses critérios.
                 </p>
               </div>
             ) : (
