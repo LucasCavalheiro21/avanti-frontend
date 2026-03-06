@@ -1,199 +1,96 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { api } from "../services/api";
-import { Toast } from "../components/Toast";
 
 export const Pessoas = () => {
-  const [form, setForm] = useState({
-    nome: "",
-    email: "",
-    telefone: "",
-    descricao: "",
-  });
-  const [idCriado, setIdCriado] = useState(null);
-  const [toast, setToast] = useState(null);
-  const navigate = useNavigate();
+  const [pessoas, setPessoas] = useState([]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name === "telefone") {
-      let v = value.replace(/\D/g, "");
-      if (v.length > 11) v = v.slice(0, 11);
-      v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
-      v = v.replace(/(\d{5})(\d)/, "$1-$2");
-      setForm({ ...form, telefone: v });
-      return;
+  useEffect(() => {
+    async function carregar() {
+      try {
+        const response = await api.get("/pessoas");
+        const apenasMentores = response.data.filter(
+          (p) => p.buscando === "professor",
+        );
+        setPessoas(apenasMentores);
+      } catch (error) {
+        console.error(error);
+      }
     }
-    setForm({ ...form, [name]: value });
-  };
-
-  const registrar = async (e) => {
-    e.preventDefault();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailRegex.test(form.email)) {
-      setToast({ message: "Email inválido.", type: "error" });
-      return;
-    }
-
-    try {
-      const response = await api.post("/pessoas", form);
-      setIdCriado(response.data.id);
-      setToast({ message: "Cadastro realizado com sucesso!", type: "success" });
-    } catch (error) {
-      console.error(error);
-      setToast({
-        message: error.response?.data?.error || "Erro no cadastro",
-        type: "error",
-      });
-    }
-  };
-
-  const atualizar = async () => {
-    try {
-      await api.put(`/pessoas/${idCriado}`, form);
-      setToast({
-        message: "Atualização realizada com sucesso!",
-        type: "update",
-      });
-    } catch (error) {
-      console.error(error);
-      setToast({ message: "Erro ao atualizar", type: "error" });
-    }
-  };
-
-  const excluir = async () => {
-    try {
-      await api.delete(`/pessoas/${idCriado}`);
-      setForm({ nome: "", email: "", telefone: "", descricao: "" });
-      setIdCriado(null);
-      setToast({ message: "Cadastro removido com sucesso!", type: "delete" });
-    } catch (error) {
-      console.error(error);
-      setToast({ message: "Erro ao excluir", type: "error" });
-    }
-  };
+    carregar();
+  }, []);
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-white">
-      <div className="md:w-5/12 bg-linear-to-b from-[#13225E] to-[#0162B3] flex flex-col items-center justify-center text-white p-12 relative shadow-2xl z-10">
-        <button
-          onClick={() => navigate("/")}
-          className="absolute top-10 left-10 text-white/80 font-bold hover:text-[#FFD84F] transition-colors flex items-center gap-2"
-        >
-          <span>&larr;</span> Voltar ao Início
-        </button>
-        <div className="text-center">
-          <h1 className="text-6xl font-extrabold mb-6 drop-shadow-lg">
-            SkillMatch
-          </h1>
-          <p className="text-2xl text-[#2092D3] font-light max-w-sm mx-auto">
-            Faça parte da nossa rede de talentos e conecte-se com o futuro.
-          </p>
+    <>
+      <div className="w-full min-h-[calc(100vh-80px)] flex flex-col lg:flex-row m-0 p-0">
+        <div className="w-full lg:w-4/12 bg-linear-to-br from-[#13225E] to-[#0162B3] flex flex-col justify-center p-8 md:p-16 relative shadow-2xl z-10 lg:min-h-full">
+          <div className="w-full text-center lg:text-left">
+            <h1 className="text-[28px] md:text-[40px] font-extrabold mb-4 drop-shadow-lg text-white tracking-tighter">
+              Profissionais
+            </h1>
+            <p className="text-[16px] md:text-[24px] text-[#2092D3] font-light leading-relaxed">
+              Nossa rede de talentos. Descubra mentores prontos para ensinar
+              você.
+            </p>
+            <div className="w-16 h-1.5 bg-[#FFD84F] mt-8 rounded-full mx-auto lg:mx-0"></div>
+          </div>
+        </div>
+
+        <div className="w-full lg:w-8/12 bg-[#F8F9FA] p-6 md:p-16 overflow-y-auto lg:max-h-[calc(100vh-80px)]">
+          <div className="w-full max-w-5xl mx-auto">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-[#E5E7EB] pb-6 mb-8 gap-4">
+              <h2 className="text-[26px] md:text-[32px] font-extrabold text-[#13225E] tracking-tight">
+                Mentores Cadastrados
+              </h2>
+              <span className="bg-[#E5E7EB] text-[#524f4f] font-bold px-4 py-1.5 rounded-full text-[14px] whitespace-nowrap">
+                {pessoas.length} Encontrados
+              </span>
+            </div>
+
+            {pessoas.length === 0 ? (
+              <div className="text-center py-20 bg-white rounded-2xl border border-[#E5E7EB] shadow-sm">
+                <p className="text-[#524f4f] text-[18px] font-light">
+                  Nenhum mentor encontrado na rede.
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-5">
+                {pessoas.map((pessoa) => (
+                  <div
+                    key={pessoa.id}
+                    className="bg-white p-6 md:p-8 rounded-2xl shadow-sm hover:shadow-md transition-all border border-[#E5E7EB] flex flex-col sm:flex-row items-center sm:items-start gap-6 group"
+                  >
+                    <img
+                      src={
+                        pessoa.fotoUrl ||
+                        `https://api.dicebear.com/9.x/avataaars/svg?seed=${pessoa.nome.replace(/\s+/g, "")}`
+                      }
+                      alt={pessoa.nome}
+                      className="w-24 h-24 bg-[#F0EBEB] rounded-full object-cover border-4 border-white shadow-sm group-hover:scale-105 transition-transform shrink-0"
+                    />
+                    <div className="flex-1 text-center sm:text-left w-full">
+                      <h3 className="text-[24px] font-bold text-[#13225E] mb-1">
+                        {pessoa.nome}
+                      </h3>
+                      <p className="text-[#0162B3] font-medium text-[14px] mb-3">
+                        {pessoa.email}
+                      </p>
+                      <p className="text-[14px] text-[#524f4f] font-light line-clamp-2 leading-relaxed">
+                        {pessoa.descricao ||
+                          "Este mentor ainda não adicionou uma descrição ao perfil."}
+                      </p>
+                    </div>
+                    <div className="mt-2 sm:mt-0">
+                      <span className="bg-[#F0EBEB] text-[#524f4f] font-bold px-4 py-1.5 rounded-full uppercase tracking-wider text-[12px] whitespace-nowrap">
+                        MENTOR
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
-
-      <div className="md:w-7/12 flex items-center justify-center p-8 lg:p-20 bg-[#F8F9FA]">
-        <form
-          onSubmit={registrar}
-          className="w-full max-w-lg flex flex-col gap-6 bg-white p-10 rounded-3xl shadow-xl border border-[#E5E7EB]"
-        >
-          <div className="mb-4">
-            <h2 className="text-4xl font-extrabold text-[#13225E] mb-2">
-              Crie seu Perfil
-            </h2>
-            <p className="text-[#524f4f]">
-              Preencha os dados abaixo para se cadastrar.
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-bold text-[#13225E] ml-1">
-              Nome Completo *
-            </label>
-            <input
-              name="nome"
-              placeholder="Digite seu nome"
-              className="w-full bg-[#F3F4F6] border-none p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0162B3] transition-all"
-              value={form.nome}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-bold text-[#13225E] ml-1">
-              E-mail *
-            </label>
-            <input
-              name="email"
-              type="email"
-              placeholder="seu@email.com"
-              className="w-full bg-[#F3F4F6] border-none p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0162B3] transition-all"
-              value={form.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-bold text-[#13225E] ml-1">
-              Telefone
-            </label>
-            <input
-              name="telefone"
-              placeholder="(00) 00000-0000"
-              className="w-full bg-[#F3F4F6] border-none p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0162B3] transition-all"
-              value={form.telefone}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-bold text-[#13225E] ml-1">
-              Suas Habilidades
-            </label>
-            <textarea
-              name="descricao"
-              placeholder="Conte um pouco sobre o que você faz..."
-              className="w-full bg-[#F3F4F6] border-none p-4 rounded-xl h-32 resize-none focus:outline-none focus:ring-2 focus:ring-[#0162B3] transition-all"
-              value={form.descricao}
-              onChange={handleChange}
-            />
-          </div>
-
-          <button className="bg-[#4BB002] text-white font-bold text-xl px-4 py-5 rounded-xl hover:bg-[#3da002] transition-all shadow-md mt-4">
-            {idCriado ? "Perfil Registrado" : "Registrar Perfil"}
-          </button>
-
-          {idCriado && (
-            <div className="flex gap-4 mt-2">
-              <button
-                type="button"
-                onClick={atualizar}
-                className="flex-1 bg-[#0162B3] text-white font-bold py-4 rounded-xl hover:bg-[#13225E] transition-all shadow-md"
-              >
-                Atualizar
-              </button>
-              <button
-                type="button"
-                onClick={excluir}
-                className="flex-1 bg-white text-[#F13232] border-2 border-[#F13232] font-bold py-4 rounded-xl hover:bg-[#F13232] hover:text-white transition-all shadow-md"
-              >
-                Excluir
-              </button>
-            </div>
-          )}
-        </form>
-      </div>
-
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
-    </div>
+    </>
   );
 };
