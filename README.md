@@ -1,6 +1,7 @@
 # 📚 Banco de Trocas de Conhecimento
 
-![Status](https://img.shields.io/badge/Status-em_desenvolvimento-orange) ![License](https://img.shields.io/badge/License-proprietary-red)
+![Status](https://img.shields.io/badge/Status-em_desenvolvimento-orange)
+![License](https://img.shields.io/badge/License-proprietary-red)
 
 ## 📌 Introdução
 
@@ -56,11 +57,9 @@ O escopo do sistema abrange:
 
 ## 🛠️ Stacks e Tecnologias
 
-![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
-![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
-![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/postgresql-4169e1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+![Axios](https://img.shields.io/badge/axios-671ddf?style=for-the-badge&logo=axios&logoColor=white)
 ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
@@ -68,22 +67,10 @@ O escopo do sistema abrange:
 ![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
 ![NPM](https://img.shields.io/badge/NPM-CB3837?style=for-the-badge&logo=npm&logoColor=white)
 ![VS Code](https://img.shields.io/badge/VS_Code-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)
-![Insomnia](https://img.shields.io/badge/Insomnia-5849be?style=for-the-badge&logo=Insomnia&logoColor=white)
-![DBeaver](https://img.shields.io/badge/DBeaver-382923?style=for-the-badge&logo=dbeaver&logoColor=white)
 
 ---
 
 ## 🚀 Como rodar o projeto
-
-### 📋 Pré-requisitos
-
-Antes de começar, certifique-se de ter as seguintes ferramentas instaladas em sua máquina:
-
-- [Git](https://git-scm.com/)
-- [npm](https://npmjs.com/)
-- [Node.js](https://nodejs.org/en/)
-- [PostgreSQL](https://www.postgresql.org/)
-- (Opcional) [DBeaver](https://dbeaver.io/) ou [PgAdmin](https://www.pgadmin.org/) para gerenciar o banco
 
 ### 🔧 Instalação e Configuração
 
@@ -92,7 +79,7 @@ Antes de começar, certifique-se de ter as seguintes ferramentas instaladas em s
 No terminal, navegue até a pasta onde deseja salvar o projeto e execute:
 
 ```bash
-git clone https://github.com/LucasCavalheiro21/avanti-dfs-02.git
+git clone https://github.com/isaias30silva/avanti-dfs-02.git
 ```
 
 #### 2. Acesse a pasta do projeto
@@ -108,7 +95,7 @@ cd avanti-dfs-02
 As configurações do servidor estão na pasta Back-End. Navegue até ela:
 
 ```bash
-cd BackEnd
+cd frontend
 ```
 
 #### 4. Instale as dependências
@@ -119,118 +106,48 @@ Execute o comando abaixo para instalar todas as bibliotecas necessárias listada
 npm install
 ```
 
-#### 5. Configuração do Banco de Dados
-
-Abra seu gerenciador de banco ou terminal do PostgreSQL e crie um banco novo.
-
-#### 6. Configuração das Variáveis de Ambiente (.env)
-
-Crie um arquivo chamado .env na raiz da pasta Back-End. Dentro dele, adicione a string de conexão com o seu banco de dados PostgreSQL:
-
-```env
-DATABASE_URL="postgresql://USUARIO:SENHA@localhost:5432/NOME_DO_BANCO"
-```
-
-Atenção: Substitua USUARIO, SENHA e NOME_DO_BANCO pelas credenciais do seu PostgreSQL local.
-
-#### 7. Configure o Banco de Dados (Prisma)
-
-Para criar as tabelas no seu banco de dados local com base no esquema do projeto, execute:
-
-```bash
-npx prisma migrate dev
-```
-
-Em seguida, gere o cliente do Prisma (necessário para o código interagir com o banco):
-
-```bash
-npx prisma generate
-```
-
-#### 8. Executando o Projeto
+#### 4. Executando o Projeto
 
 Com tudo configurado, inicie o servidor:
 
 ```bash
-npm start
+npm run dev
 ```
 
-#### 9. Testando a API
-
-O projeto roda, por padrão, em http://localhost:8080
-
-Você pode testar as rotas usando o [Insomnia](https://insomnia.rest/) ou o próprio navegador (para requisições GET).
-
-Principais rotas disponíveis para teste:
-
-| Método | Rota | Descrição |
-|---|---|---|
-| GET | `/pessoas` | Lista todos os usuários |
-| POST | `/pessoas` | Cria um novo usuário |
-| GET | `/conhecimentos` | Lista os conhecimentos disponíveis |
-| POST | `/conhecimentos` | Cria uma nova oferta |
-
-Facilitando a busca com filtros (busca parcial):
-
-| Filtro | Rota | Descrição |
-|---|---|---|
-| Nome | `/pessoas?nome=carlos` | Buscar por nome |
-| Descrição | `/pessoas?descricao=matematica` | Buscar por palavras-chave |
-| Combinando filtros | `/pessoas?nome=luc&descricao=professor` | Buscas específicas |
-| Título | `/conhecimentos?titulo=javascript` | Buscar por título |
-| Descrição | `/conhecimentos?descricao=programação` | Buscar por palavras-chave |
-| Categoria | `/conhecimentos?categoria=educa` | Buscar por categorias |
-| Nível | `/conhecimentos?nivel=intermed` | Buscar por níveis |
-| Combinando filtros | `/conhecimentos?titulo=mat&categoria=educação` | Buscas específicas |
+Acesse em: http://localhost:5173
 
 ---
 
-## 🔮 Próximos Passos
+## Backend necessário
 
-O projeto entrará em uma nova fase de evolução, focada em **segurança da aplicação** e no desenvolvimento da **camada de apresentação (Front-End)**.
+Este front-end se comunica com uma **API REST** 
 
-### 🔐 Autenticação e Autorização (Back-End)
+Certifique-se de que o back-end esteja funcionando corretamente antes de usar o app.
 
-- Implementação de autenticação baseada em **JWT (JSON Web Token)**;
-- Criptografia de senhas utilizando **bcrypt**;
-- Criação de rota de login com validação de credenciais;
-- Implementação de middleware para proteção de rotas privadas;
-- Controle de autorização garantindo que usuários possam editar ou excluir apenas suas próprias ofertas;
-- Estruturação de controle de acesso baseado em identidade do usuário autenticado.
-
-### 🎨 Desenvolvimento do Front-End
-
-O frontend será desenvolvido com **ReactJS**, fornecendo uma interface simples, responsiva e intuitiva, integrada à API REST do backend.
-
-#### Funcionalidades previstas:
-
-- Exibir a lista de conhecimentos disponíveis;
-- Implementar formulários para cadastro de pessoas e ofertas;
-- Permitir edição e remoção das ofertas;
-- Desenvolver uma **landing page** apresentando a proposta da plataforma;
-- Implementar autenticação no cliente (login e controle de sessão);
-- Realizar integração completa com a API via requisições HTTP.
+🔗 Repositório da API no GitHub: [backend](https://github.com/LucasCavalheiro21/avanti-dfs-02.git)
 
 ---
 
 ## 👥 Equipe de Desenvolvimento
 
 [@Lucas Cavalheiro](https://github.com/LucasCavalheiro21)
-- Setup Inicial e Orquestração: Inicialização do repositório Git e configuração do ambiente de desenvolvimento (gerenciamento de dependências e variáveis de ambiente).
-- Arquitetura de Persistência: Configuração do Prisma ORM, incluindo a definição de providers, geração do Prisma Client e estruturação inicial do schema.prisma.
+- Desenvolvimento de motores de filtragem dinâmica para otimizar a localização de registros na aplicação.
+- Responsável pela manutenção e estruturação do arquivo README, garantindo clareza na comunicação do projeto e das contribuições.
 
 [@Isaias Menezes Silva](https://github.com/isaias30silva)
-- Core e Routing: Configuração do ponto de entrada da aplicação (server.js) e estruturação da malha de rotas (routes.js), assegurando o correto direcionamento das requisições HTTP para seus respectivos controllers.
+- Inicialização do repositório frontend e configuração do Axios para consumo da API REST.
+- Implementação da estrutura base da Home Page e da página de fluxo para Cadastro de Pessoas.
 
 [@Matheus da Silva Carvalho](https://github.com/mc4rvalho)
-- ​Gestão de Entidades (Conhecimentos): Implementação do conhecimentosController, sendo responsável por toda a lógica de negócio e operações CRUD (Create, Read, Update, Delete) para o gerenciamento de competências.
+- Desenvolvimento do módulo de criação, edição e exlusão, incluindo validação de campos.
+- Implementação de lógica para exibição limitada de usuários na Home Page, utilizando componentes de carrossel/slider para melhorar a navegação e a performance de carregamento.
 
 [@Pedro Fernandes](https://github.com/pedrofernandesx)
-- Gestão de Entidades (Pessoas): Desenvolvimento do módulo pessoasController, responsável pela persistência e manipulação de dados referentes aos usuários/perfis no sistema via operações CRUD.
+- Criação do componente de "Card" para ofertas, garantindo a exibição dinâmica de metadados (Título, Categoria e Nível).
+- Implementação de gerador de avatares aleatórios para preenchimento visual de perfis, assegurando uma interface rica mesmo em ambientes de teste.
 
 [@Giselle Thamyris Oliveira de Morais](https://github.com/giswolfie)
-- ​Modelagem de Dados: Estruturação das tabelas e relacionamentos através do schema.prisma.
-- ​Validação e Testes: Execução de testes de integração e validação de endpoints da API utilizando Insomnia, garantindo a integridade dos dados e o correto funcionamento das rotas HTTP.
+- Responsável pela concepção visual e definição do layout de todas as páginas da aplicação, garantindo a fidelidade visual entre as telas e a experiência do usuário.
 
 ---
 
